@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ICC — Demo Comercial</title>
+<title>Exactus — Demo Comercial</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
     --sidebar-bg: #0d0d0d;
@@ -67,6 +68,20 @@
     text-transform: uppercase;
     letter-spacing: 0.8px;
   }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exactus-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: 0.5px;
+  }
+
+  .exactus-brand span { color: #F0BC5A; }
 
   .sidebar-section {
     padding: 16px 12px 8px;
@@ -599,6 +614,10 @@
 
 <!-- ══════════════════ SIDEBAR ══════════════════ -->
 <nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="exactus-brand">EXACTUS<span>.</span></div>
+  </div>
+
   <div class="sidebar-section">
     <div class="sidebar-section-label">Analytics & BI</div>
     <div class="nav-item active" onclick="showPage('smart-analytics')">
