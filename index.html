@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ICC — Demo Comercial</title>
+<style>
+  :root {
+    --sidebar-bg: #0d0d0d;
+    --sidebar-w: 260px;
+    --accent: #E8722A;
+    --accent2: #f59e4b;
+    --surface: #111418;
+    --surface2: #181c22;
+    --surface3: #1e2330;
+    --border: #2a2f3a;
+    --text: #e8eaf0;
+    --text-muted: #7b8190;
+    --text-dim: #4e5464;
+    --green: #22c55e;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --yellow: #f59e0b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo .brand {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  .sidebar-logo .brand span { color: var(--accent); }
+
+  .sidebar-logo .tagline {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .sidebar-section {
+    padding: 16px 12px 8px;
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-dim);
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: 1px solid transparent;
+    position: relative;
+  }
+
+  .nav-item:hover {
+    background: var(--surface3);
+    border-color: var(--border);
+  }
+
+  .nav-item.active {
+    background: rgba(232, 114, 42, 0.12);
+    border-color: rgba(232, 114, 42, 0.3);
+  }
+
+  .nav-item.active .nav-icon { color: var(--accent); }
+  .nav-item.active .nav-label { color: #fff; font-weight: 600; }
+
+  .nav-item.disabled { opacity: 0.4; pointer-events: none; }
+
+  .nav-icon {
+    font-size: 16px;
+    color: var(--text-muted);
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .nav-label {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(232, 114, 42, 0.2);
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .page { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+  .page.active { display: flex; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    padding: 20px 32px 0;
+    flex-shrink: 0;
+  }
+
+  .topbar-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  .topbar-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #d4641e; }
+
+  .btn-ghost {
+    background: var(--surface3);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover { color: #fff; border-color: #444; }
+
+  /* ── SUB-TABS ── */
+  .subtabs {
+    display: flex;
+    gap: 4px;
+    padding: 16px 32px 0;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .subtab {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    margin-bottom: -1px;
+  }
+
+  .subtab:hover { color: #fff; }
+  .subtab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+  /* ── CONTENT AREA ── */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+  }
+
+  .subpage { display: none; }
+  .subpage.active { display: block; }
+
+  /* ── GRID ── */
+  .grid { display: grid; gap: 16px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+  /* ── KPI CARD ── */
+  .kpi-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    transition: border-color 0.15s;
+  }
+
+  .kpi-card:hover { border-color: #3a3f4a; }
+
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .kpi-value.accent { color: var(--accent); }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.red { color: var(--red); }
+
+  .kpi-delta {
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .kpi-delta.up { color: var(--green); }
+  .kpi-delta.down { color: var(--red); }
+  .kpi-delta.neutral { color: var(--text-muted); }
+
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+
+  /* ── CHART CARD ── */
+  .chart-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .chart-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .chart-card-sub {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── MINI CHART (SVG bars) ── */
+  .chart-svg { width: 100%; overflow: visible; }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(42, 47, 58, 0.5);
+    color: var(--text);
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-yellow { background: rgba(245,158,11,0.15); color: var(--yellow); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .badge-orange { background: rgba(232,114,42,0.15); color: var(--accent2); }
+
+  /* ── INSIGHT BOX ── */
+  .insight-box {
+    background: rgba(232, 114, 42, 0.07);
+    border: 1px solid rgba(232, 114, 42, 0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .insight-box .insight-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+
+  /* ── FUNNEL ── */
+  .funnel-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .funnel-label { font-size: 12.5px; color: var(--text-muted); width: 120px; flex-shrink: 0; }
+  .funnel-bar-wrap { flex: 1; background: var(--surface3); border-radius: 4px; height: 10px; overflow: hidden; }
+  .funnel-bar { height: 100%; border-radius: 4px; background: var(--accent); transition: width 0.6s ease; }
+  .funnel-val { font-size: 12.5px; font-weight: 700; color: #fff; width: 60px; text-align: right; flex-shrink: 0; }
+  .funnel-pct { font-size: 11px; color: var(--text-muted); width: 40px; text-align: right; flex-shrink: 0; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { background: var(--surface3); border-radius: 4px; height: 6px; overflow: hidden; margin-top: 6px; }
+  .progress-bar { height: 100%; border-radius: 4px; background: var(--accent); }
+  .progress-bar.green { background: var(--green); }
+  .progress-bar.blue { background: var(--blue); }
+  .progress-bar.purple { background: var(--purple); }
+
+  /* ── DIAG CARD ── */
+  .diag-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .diag-score {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .diag-score-num {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  .score-ring {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  /* ── SIMULATION SLIDER ── */
+  .sim-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .sim-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+
+  .sim-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+
+  .sim-label { font-size: 13px; color: var(--text-muted); width: 180px; flex-shrink: 0; }
+
+  input[type=range] {
+    flex: 1;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .sim-val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+    width: 60px;
+    text-align: right;
+  }
+
+  .sim-result {
+    background: var(--surface3);
+    border-radius: 8px;
+    padding: 14px;
+    margin-top: 12px;
+    display: flex;
+    gap: 24px;
+  }
+
+  .sim-result-item { text-align: center; flex: 1; }
+  .sim-result-item .label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .sim-result-item .value { font-size: 20px; font-weight: 800; color: #fff; }
+  .sim-result-item .value.accent { color: var(--accent); }
+  .sim-result-item .value.green { color: var(--green); }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    margin-top: 20px;
+  }
+
+  .section-title:first-child { margin-top: 0; }
+
+  /* ── COMING SOON ── */
+  .coming-soon {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--text-dim);
+  }
+
+  .coming-soon .icon { font-size: 48px; }
+  .coming-soon .title { font-size: 18px; font-weight: 700; color: var(--text-muted); }
+  .coming-soon .desc { font-size: 13px; text-align: center; max-width: 320px; }
+
+  /* ── PREDICT CARD ── */
+  .predict-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(168,85,247,0.1);
+    border: 1px solid rgba(168,85,247,0.25);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--purple);
+    margin-bottom: 14px;
+  }
+
+  .dot-live {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--purple);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── CHANNEL SELECTOR ── */
+  .channel-wrap {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .channel-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface3);
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .channel-btn:hover { color: #fff; border-color: #444; }
+  .channel-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .mt-4 { margin-top: 4px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-16 { margin-bottom: 16px; }
+  .gap-16 { gap: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ SIDEBAR ══════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">ICC<span>.</span></div>
+    <div class="tagline">Intelligence & Data Platform</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Analytics & BI</div>
+    <div class="nav-item active" onclick="showPage('smart-analytics')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Smart Analytics</span>
+    </div>
+    <div class="nav-item" onclick="showPage('bi-pro')">
+      <span class="nav-icon">🧠</span>
+      <span class="nav-label">BI Pró + Decisão Lab</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Projetos & Diagnóstico</div>
+    <div class="nav-item" onclick="showPage('value-project')">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">Value Project</span>
+    </div>
+    <div class="nav-item" onclick="showPage('data-diagnosis')">
+      <span class="nav-icon">🔬</span>
+      <span class="nav-label">Data Diagnosis</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Cultura & Infraestrutura</div>
+    <div class="nav-item disabled" onclick="showPage('data-culture')">
+      <span class="nav-icon">🌱</span>
+      <span class="nav-label">Data Culture</span>
+      <span class="nav-badge">Em breve</span>
+    </div>
+    <div class="nav-item disabled" onclick="showPage('data-foundation')">
+      <span class="nav-icon">🏗️</span>
+      <span class="nav-label">Data Foundation</span>
+      <span class="nav-badge">Em breve</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    ICC Intelligence &copy; 2025 — Demo Comercial
+  </div>
+</nav>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main class="main">
+
+  <!-- ─────────── SMART ANALYTICS ─────────── -->
+  <div class="page active" id="page-smart-analytics">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <div class="page-title">Smart Analytics</div>
+          <div class="page-subtitle">Visão analítica por área ou canal — escolha o contexto do cliente</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">↗ Exportar</button>
+          <button class="btn btn-primary">⚡ Personalizar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="subtabs" id="subtabs-sa">
+      <div class="subtab active" onclick="showSubtab('sa','comercial')">Comercial</div>
+      <div class="subtab" onclick="showSubtab('sa','financeiro')">Financeiro</div>
+      <div class="subtab" onclick="showSubtab('sa','operacoes')">Operações</div>
+      <div class="subtab" onclick="showSubtab('sa','rh')">RH</div>
+      <div class="subtab" onclick="showSubtab('sa','logistica')">Logística</div>
+      <div class="subtab" onclick="showSubtab('sa','producao')">Produção</div>
+    </div>
+
+    <div class="content">
+      <!-- COMERCIAL -->
+      <div class="subpage active" id="sa-comercial">
+        <div class="insight-box">
+          <div class="insight-label">⚡ Insight ICC</div>
+          Canal E-commerce apresenta queda de conversão de 4.2% nos últimos 30 dias com CAC 38% acima da meta. Ação imediata recomendada na jornada de checkout.
+        </div>
+
+        <div class="channel-wrap">
+          <div class="channel-btn active">Todos os Canais</div>
+          <div class="channel-btn">E-commerce</div>
+          <div class="channel-btn">Loja Física</div>
+          <div class="channel-btn">Marketplace</div>
+          <div class="channel-btn">Inside Sales</div>
+          <div class="channel-btn">WhatsApp</div>
+        </div>
+
+        <div class="section-title">KPIs Comerciais</div>
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Receita Bruta MTD</div>
+            <div class="kpi-value accent">R$ 4,7M</div>
+            <div class="kpi-delta up">▲ +12,4% vs mês ant.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Ticket Médio</div>
+            <div class="kpi-value">R$ 287</div>
+            <div class="kpi-delta down">▼ -3,1% vs mês ant.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Taxa de Conversão</div>
+            <div class="kpi-value green">3,8%</div>
+            <div class="kpi-delta up">▲ +0,4pp vs mês ant.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">CAC Blended</div>
+            <div class="kpi-value red">R$ 142</div>
+            <div class="kpi-delta down">▼ Meta: R$ 103</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-16">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <div class="chart-card-title">Funil de Vendas</div>
+                <div class="chart-card-sub">Últimos 30 dias</div>
+              </div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Visitantes</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"></div></div>
+              <div class="funnel-val">124.800</div>
+              <div class="funnel-pct">100%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Leads</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:62%"></div></div>
+              <div class="funnel-val">77.376</div>
+              <div class="funnel-pct">62%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Oportunidades</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:28%"></div></div>
+              <div class="funnel-val">34.944</div>
+              <div class="funnel-pct">28%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Propostas</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:11%"></div></div>
+              <div class="funnel-val">13.728</div>
+              <div class="funnel-pct">11%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Vendas</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:4%; background:var(--green)"></div></div>
+              <div class="funnel-val">4.742</div>
+              <div class="funnel-pct">3,8%</div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <div class="chart-card-title">Mix de Canais — Receita</div>
+                <div class="chart-card-sub">Participação % no mês</div>
+              </div>
+            </div>
+            <div style="margin-top:8px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                <span style="font-size:13px;color:var(--text-muted)">E-commerce</span>
+                <span style="font-size:13px;font-weight:700;color:#fff">R$ 1,9M</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:40%"></div></div>
+
+              <div style="display:flex;justify-content:space-between;margin:12px 0 6px">
+                <span style="font-size:13px;color:var(--text-muted)">Loja Física</span>
+                <span style="font-size:13px;font-weight:700;color:#fff">R$ 1,4M</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar green" style="width:30%"></div></div>
+
+              <div style="display:flex;justify-content:space-between;margin:12px 0 6px">
+                <span style="font-size:13px;color:var(--text-muted)">Marketplace</span>
+                <span style="font-size:13px;font-weight:700;color:#fff">R$ 940K</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar blue" style="width:20%"></div></div>
+
+              <div style="display:flex;justify-content:space-between;margin:12px 0 6px">
+                <span style="font-size:13px;color:var(--text-muted)">Inside Sales</span>
+                <span style="font-size:13px;font-weight:700;color:#fff">R$ 470K</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar purple" style="width:10%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title mt-16">Top Produtos por Receita</div>
+        <div class="chart-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Canal Principal</th>
+                <th>Receita MTD</th>
+                <th>Margem</th>
+                <th>Volume</th>
+                <th>Conversão</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Plano Premium X</strong></td>
+                <td>E-commerce</td>
+                <td>R$ 890K</td>
+                <td><span class="badge badge-green">42%</span></td>
+                <td>3.102</td>
+                <td>5,2%</td>
+                <td><span class="badge badge-green">▲ Acima</span></td>
+              </tr>
+              <tr>
+                <td><strong>Serviço Core B2B</strong></td>
+                <td>Inside Sales</td>
+                <td>R$ 740K</td>
+                <td><span class="badge badge-green">61%</span></td>
+                <td>248</td>
+                <td>18,4%</td>
+                <td><span class="badge badge-green">▲ Acima</span></td>
+              </tr>
+              <tr>
+                <td><strong>Pack Entrada</strong></td>
+                <td>Marketplace</td>
+                <td>R$ 610K</td>
+                <td><span class="badge badge-yellow">28%</span></td>
+                <td>8.471</td>
+                <td>2,1%</td>
+                <td><span class="badge badge-yellow">→ Meta</span></td>
+              </tr>
+              <tr>
+                <td><strong>Assinatura Mensal</strong></td>
+                <td>WhatsApp</td>
+                <td>R$ 390K</td>
+                <td><span class="badge badge-red">14%</span></td>
+                <td>2.600</td>
+                <td>1,8%</td>
+                <td><span class="badge badge-red">▼ Abaixo</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FINANCEIRO -->
+      <div class="subpage" id="sa-financeiro">
+        <div class="insight-box">
+          <div class="insight-label">⚡ Insight ICC</div>
+          Margem EBITDA caiu 5,2pp em 90 dias por aumento de CMV. O principal driver é o fornecedor A (+23% nos insumos). Renegociação ou substituição pode recuperar R$ 280K/mês.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Receita Líquida</div>
+            <div class="kpi-value accent">R$ 4,1M</div>
+            <div class="kpi-delta up">▲ +9,8% YoY</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Margem Bruta</div>
+            <div class="kpi-value">48,3%</div>
+            <div class="kpi-delta down">▼ -2,1pp vs meta</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">EBITDA</div>
+            <div class="kpi-value green">R$ 820K</div>
+            <div class="kpi-delta neutral">→ 20% margem</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Inadimplência</div>
+            <div class="kpi-value red">3,7%</div>
+            <div class="kpi-delta down">▼ Meta: 2,0%</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-16">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <div class="chart-card-title">DRE Resumido — Últimos 6 meses</div>
+                <div class="chart-card-sub">R$ milhares</div>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Linha</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Receita Bruta</td><td>4.210</td><td>4.380</td><td>4.520</td><td>4.690</td><td>4.820</td><td>4.970</td></tr>
+                <tr><td>(-) Deduções</td><td style="color:var(--red)">-630</td><td style="color:var(--red)">-657</td><td style="color:var(--red)">-678</td><td style="color:var(--red)">-703</td><td style="color:var(--red)">-723</td><td style="color:var(--red)">-745</td></tr>
+                <tr><td><strong>Receita Líquida</strong></td><td><strong>3.580</strong></td><td><strong>3.723</strong></td><td><strong>3.842</strong></td><td><strong>3.987</strong></td><td><strong>4.097</strong></td><td><strong>4.225</strong></td></tr>
+                <tr><td>(-) CMV</td><td style="color:var(--red)">-1.790</td><td style="color:var(--red)">-1.898</td><td style="color:var(--red)">-1.960</td><td style="color:var(--red)">-2.074</td><td style="color:var(--red)">-2.172</td><td style="color:var(--red)">-2.240</td></tr>
+                <tr><td><strong>Margem Bruta</strong></td><td><strong style="color:var(--green)">1.790</strong></td><td><strong style="color:var(--green)">1.825</strong></td><td><strong style="color:var(--green)">1.882</strong></td><td><strong style="color:var(--green)">1.913</strong></td><td><strong style="color:var(--green)">1.925</strong></td><td><strong style="color:var(--green)">1.985</strong></td></tr>
+                <tr><td><strong>EBITDA</strong></td><td><strong style="color:var(--accent)">714</strong></td><td><strong style="color:var(--accent)">756</strong></td><td><strong style="color:var(--accent)">791</strong></td><td><strong style="color:var(--accent)">797</strong></td><td><strong style="color:var(--accent)">815</strong></td><td><strong style="color:var(--accent)">822</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <div class="chart-card-title">Composição de Custos</div>
+                <div class="chart-card-sub">% da receita líquida</div>
+              </div>
+            </div>
+            <div style="margin-top:8px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                <span style="font-size:13px;color:var(--text-muted)">CMV / CPV</span>
+                <span style="font-size:13px;font-weight:700;color:var(--red)">53%</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:53%;background:var(--red)"></div></div>
+
+              <div style="display:flex;justify-content:space-between;margin:12px 0 6px">
+                <span style="font-size:13px;color:var(--text-muted)">Despesas Comerciais</span>
+                <span style="font-size:13px;font-weight:700;color:#fff">15%</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:15%"></div></div>
+
+              <div style="display:flex;justify-content:space-between;margin:12px 0 6px">
+                <span style="font-size:13px;color:var(--text-muted)">G&A</span>
+                <span style="font-size:13px;font-weight:700;color:#fff">12%</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar blue" style="width:12%"></div></div>
+
+              <div style="display:flex;justify-content:space-between;margin:12px 0 6px">
+                <span style="font-size:13px;color:var(--text-muted)">EBITDA</span>
+                <span style="font-size:13px;font-weight:700;color:var(--green)">20%</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar green" style="width:20%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPERAÇÕES -->
+      <div class="subpage" id="sa-operacoes">
+        <div class="insight-box">
+          <div class="insight-label">⚡ Insight ICC</div>
+          OEE da linha 2 caiu para 61% — 18pp abaixo da meta. Paradas não planejadas somam 4,3h/dia. Potencial de recuperação: R$ 190K/mês se OEE retornar a 79%.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">OEE Geral</div>
+            <div class="kpi-value red">68%</div>
+            <div class="kpi-delta down">▼ Meta: 79%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Peças / Hora</div>
+            <div class="kpi-value">1.240</div>
+            <div class="kpi-delta neutral">→ Cap. 1.820</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Retrabalho</div>
+            <div class="kpi-value red">2,8%</div>
+            <div class="kpi-delta down">▼ Meta: 1,0%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Uptime Equipamentos</div>
+            <div class="kpi-value green">91,4%</div>
+            <div class="kpi-delta up">▲ +1,2pp</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <div>
+              <div class="chart-card-title">Paradas por Causa — Últimas 4 semanas</div>
+              <div class="chart-card-sub">horas acumuladas</div>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="funnel-row">
+              <div class="funnel-label">Manutenção corretiva</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%;background:var(--red)"></div></div>
+              <div class="funnel-val">28,4h</div>
+              <div class="funnel-pct">38%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Setup / Troca</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:72%;background:var(--yellow)"></div></div>
+              <div class="funnel-val">20,4h</div>
+              <div class="funnel-pct">27%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Falta de insumo</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:52%;background:var(--accent)"></div></div>
+              <div class="funnel-val">14,9h</div>
+              <div class="funnel-pct">20%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Qualidade</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:26%;background:var(--blue)"></div></div>
+              <div class="funnel-val">7,5h</div>
+              <div class="funnel-pct">10%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Outros</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:15%;background:var(--text-dim)"></div></div>
+              <div class="funnel-val">3,8h</div>
+              <div class="funnel-pct">5%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RH -->
+      <div class="subpage" id="sa-rh">
+        <div class="insight-box">
+          <div class="insight-label">⚡ Insight ICC</div>
+          Turnover no setor de vendas atingiu 38% no semestre — custo estimado de reposição: R$ 2.100/colaborador. Top driver: remuneração variável abaixo do mercado em 22%.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Headcount Total</div>
+            <div class="kpi-value accent">312</div>
+            <div class="kpi-delta up">▲ +18 vs jan</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Turnover</div>
+            <div class="kpi-value red">14,2%</div>
+            <div class="kpi-delta down">▼ Meta: 8%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Absenteísmo</div>
+            <div class="kpi-value">3,1%</div>
+            <div class="kpi-delta neutral">→ Meta: 3%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Receita / Colaborador</div>
+            <div class="kpi-value green">R$ 15,1K</div>
+            <div class="kpi-delta up">▲ +8,2% YoY</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-title" style="margin-bottom:14px">Distribuição de Headcount por Área</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Área</th><th>HC Atual</th><th>HC Orçado</th><th>Turnover</th><th>Custo Médio</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Operações</td><td>98</td><td>95</td><td><span class="badge badge-yellow">11%</span></td><td>R$ 4.200</td><td><span class="badge badge-green">OK</span></td></tr>
+              <tr><td>Comercial</td><td>72</td><td>80</td><td><span class="badge badge-red">38%</span></td><td>R$ 5.800</td><td><span class="badge badge-red">Crítico</span></td></tr>
+              <tr><td>Tecnologia</td><td>41</td><td>40</td><td><span class="badge badge-green">6%</span></td><td>R$ 9.400</td><td><span class="badge badge-green">OK</span></td></tr>
+              <tr><td>Financeiro</td><td>28</td><td>28</td><td><span class="badge badge-green">4%</span></td><td>R$ 6.100</td><td><span class="badge badge-green">OK</span></td></tr>
+              <tr><td>Logística</td><td>44</td><td>45</td><td><span class="badge badge-yellow">16%</span></td><td>R$ 3.600</td><td><span class="badge badge-yellow">Atenção</span></td></tr>
+              <tr><td>Administrativo</td><td>29</td><td>30</td><td><span class="badge badge-green">8%</span></td><td>R$ 4.900</td><td><span class="badge badge-green">OK</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- LOGÍSTICA -->
+      <div class="subpage" id="sa-logistica">
+        <div class="insight-box">
+          <div class="insight-label">⚡ Insight ICC</div>
+          OTIF caiu para 81% — 14pp abaixo da meta. A região Sul responde por 42% das entregas atrasadas. Reroteirização pode reduzir custo por entrega em R$ 3,20 sem aumentar prazo médio.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">OTIF</div>
+            <div class="kpi-value red">81%</div>
+            <div class="kpi-delta down">▼ Meta: 95%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Prazo Médio Entrega</div>
+            <div class="kpi-value">3,4 dias</div>
+            <div class="kpi-delta down">▼ Meta: 2,5d</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Custo / Entrega</div>
+            <div class="kpi-value accent">R$ 18,70</div>
+            <div class="kpi-delta up">▲ +R$ 2,30</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Avarias</div>
+            <div class="kpi-value green">0,8%</div>
+            <div class="kpi-delta up">▲ -0,3pp</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUÇÃO -->
+      <div class="subpage" id="sa-producao">
+        <div class="insight-box">
+          <div class="insight-label">⚡ Insight ICC</div>
+          Volume produzido 8% abaixo do planejado no mês. Principal gargalo: linha 3 com capacidade subutilizada às 3ª e 4ª feiras. Reprogramação simples pode recuperar 4.200 unidades/mês.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Volume Produzido</div>
+            <div class="kpi-value accent">82.400 un</div>
+            <div class="kpi-delta down">▼ -8% vs plano</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Capacidade Utilizada</div>
+            <div class="kpi-value">73%</div>
+            <div class="kpi-delta neutral">→ Cap: 112.800</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Custo Unit. Produção</div>
+            <div class="kpi-value red">R$ 24,80</div>
+            <div class="kpi-delta down">▼ Meta: R$ 21,00</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Lead Time Interno</div>
+            <div class="kpi-value green">4,2 dias</div>
+            <div class="kpi-delta up">▲ -0,8d YoY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── BI PRÓ + DECISÃO LAB ─────────── -->
+  <div class="page" id="page-bi-pro">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <div class="page-title">BI Pró + Decisão Lab</div>
+          <div class="page-subtitle">Áreas integradas com análises profundas e simulações preditivas</div>
+        </div>
+        <div class="topbar-actions">
+          <div class="predict-pill"><span class="dot-live"></span>IA Preditiva Ativa</div>
+          <button class="btn btn-primary">⚙ Configurar Simulação</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="subtabs" id="subtabs-bi">
+      <div class="subtab active" onclick="showSubtab('bi','overview')">Visão Integrada</div>
+      <div class="subtab" onclick="showSubtab('bi','comercial')">Comercial + Fin.</div>
+      <div class="subtab" onclick="showSubtab('bi','ops')">Ops + Produção</div>
+      <div class="subtab" onclick="showSubtab('bi','predicao')">Análise Preditiva</div>
+    </div>
+
+    <div class="content">
+      <!-- OVERVIEW -->
+      <div class="subpage active" id="bi-overview">
+        <div class="insight-box">
+          <div class="insight-label">🧠 Correlação Identificada pela IA</div>
+          Queda de 1pp no OTIF gera impacto médio de -2,3pp na taxa de recompra em 45 dias. Com OTIF atual em 81%, o risco de perda de receita recorrente é R$ 340K no próximo trimestre se não corrigido.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Score de Saúde Geral</div>
+            <div class="kpi-value accent">72/100</div>
+            <div class="kpi-delta neutral">→ Moderado</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Alertas Críticos</div>
+            <div class="kpi-value red">3</div>
+            <div class="kpi-delta down">▼ CAC, OTIF, Turnover</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Oportunidade Mapeada</div>
+            <div class="kpi-value green">R$ 1,2M</div>
+            <div class="kpi-delta up">▲ Potencial 12 meses</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Projetos Ativos</div>
+            <div class="kpi-value">7</div>
+            <div class="kpi-delta neutral">→ 2 em execução</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-16">
+          <div class="chart-card">
+            <div class="chart-card-title" style="margin-bottom:14px">Mapa de Correlações — Áreas</div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Causa</th><th>Efeito</th><th>Correlação</th><th>Impacto R$</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CAC alto</td>
+                  <td>LTV/CAC baixo</td>
+                  <td><span class="badge badge-red">-0,87</span></td>
+                  <td style="color:var(--red)">-R$ 280K/mês</td>
+                </tr>
+                <tr>
+                  <td>OTIF baixo</td>
+                  <td>Recompra</td>
+                  <td><span class="badge badge-red">-0,74</span></td>
+                  <td style="color:var(--red)">-R$ 340K/tri</td>
+                </tr>
+                <tr>
+                  <td>OEE baixo</td>
+                  <td>CMV</td>
+                  <td><span class="badge badge-yellow">-0,62</span></td>
+                  <td style="color:var(--yellow)">+R$ 190K/mês</td>
+                </tr>
+                <tr>
+                  <td>Turnover</td>
+                  <td>Conversão</td>
+                  <td><span class="badge badge-yellow">-0,58</span></td>
+                  <td style="color:var(--yellow)">-R$ 120K/mês</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-title" style="margin-bottom:14px">Priorização de Iniciativas</div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Iniciativa</th><th>Esforço</th><th>ROI 12m</th><th>Prazo</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Reroteirização Logística</strong></td>
+                  <td><span class="badge badge-green">Baixo</span></td>
+                  <td style="color:var(--green)">14x</td>
+                  <td>30 dias</td>
+                </tr>
+                <tr>
+                  <td><strong>Renegociar Fornecedor A</strong></td>
+                  <td><span class="badge badge-yellow">Médio</span></td>
+                  <td style="color:var(--green)">22x</td>
+                  <td>45 dias</td>
+                </tr>
+                <tr>
+                  <td><strong>Programa Retenção Vendas</strong></td>
+                  <td><span class="badge badge-yellow">Médio</span></td>
+                  <td style="color:var(--accent2)">8x</td>
+                  <td>60 dias</td>
+                </tr>
+                <tr>
+                  <td><strong>Otimização OEE L2</strong></td>
+                  <td><span class="badge badge-red">Alto</span></td>
+                  <td style="color:var(--green)">31x</td>
+                  <td>90 dias</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMERCIAL + FIN -->
+      <div class="subpage" id="bi-comercial">
+        <div class="grid grid-2 gap-16 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">LTV Médio</div>
+            <div class="kpi-value accent">R$ 3.840</div>
+            <div class="kpi-delta up">▲ LTV/CAC: 27x</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Payback Médio</div>
+            <div class="kpi-value green">4,9 meses</div>
+            <div class="kpi-delta up">▲ Meta: 6m</div>
+          </div>
+        </div>
+
+        <div class="sim-box">
+          <div class="sim-title">🎛 Simulador: Impacto da Redução de CAC</div>
+          <div class="sim-row">
+            <div class="sim-label">Redução no CAC (%)</div>
+            <input type="range" min="0" max="40" value="20" oninput="simCAC(this.value)">
+            <div class="sim-val" id="cac-pct">-20%</div>
+          </div>
+          <div class="sim-row">
+            <div class="sim-label">Novos clientes/mês</div>
+            <input type="range" min="100" max="2000" value="600" step="50" oninput="simVol(this.value)">
+            <div class="sim-val" id="vol-val">600</div>
+          </div>
+          <div class="sim-result">
+            <div class="sim-result-item">
+              <div class="label">Economia Mensal</div>
+              <div class="value green" id="sim-econ">R$ 17K</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Ganho Anual</div>
+              <div class="value accent" id="sim-anual">R$ 204K</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Melhoria LTV/CAC</div>
+              <div class="value green" id="sim-ltv">+6pp</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OPS + PRODUÇÃO -->
+      <div class="subpage" id="bi-ops">
+        <div class="sim-box">
+          <div class="sim-title">🎛 Simulador: Ganho com Melhoria de OEE</div>
+          <div class="sim-row">
+            <div class="sim-label">OEE Atual (%)</div>
+            <input type="range" min="50" max="95" value="68" oninput="simOEE(this.value)">
+            <div class="sim-val" id="oee-val">68%</div>
+          </div>
+          <div class="sim-result">
+            <div class="sim-result-item">
+              <div class="label">Unidades Adicionais</div>
+              <div class="value accent" id="oee-un">0</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Receita Adicional</div>
+              <div class="value green" id="oee-rec">R$ 0</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Redução CMV%</div>
+              <div class="value green" id="oee-cmv">0pp</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREDIÇÃO -->
+      <div class="subpage" id="bi-predicao">
+        <div class="predict-pill" style="margin-bottom:16px"><span class="dot-live"></span>Modelos ML — Atualização semanal</div>
+
+        <div class="grid grid-3 gap-16 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Churn Previsto — 60 dias</div>
+            <div class="kpi-value red">8,4%</div>
+            <div class="kpi-sub">↑ Alta probabilidade: 312 clientes</div>
+            <div class="progress-wrap mt-8"><div class="progress-bar" style="width:84%;background:var(--red)"></div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Demanda Prevista — Próx. Mês</div>
+            <div class="kpi-value accent">91.200 un</div>
+            <div class="kpi-sub">Intervalo: 88K – 94K (conf. 90%)</div>
+            <div class="progress-wrap mt-8"><div class="progress-bar green" style="width:72%"></div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Score Inadimplência</div>
+            <div class="kpi-value yellow" style="color:var(--yellow)">3,9%</div>
+            <div class="kpi-sub">Risco elevado: 48 contas — R$ 182K</div>
+            <div class="progress-wrap mt-8"><div class="progress-bar" style="width:39%;background:var(--yellow)"></div></div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-title" style="margin-bottom:14px">Clientes em Risco de Churn — Top 10</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Cliente</th><th>Score Risco</th><th>Último Pedido</th><th>LTV</th><th>Sinal Principal</th><th>Ação Sugerida</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Empresa Alpha Ltda</strong></td>
+                <td><span class="badge badge-red">94%</span></td>
+                <td>62 dias</td>
+                <td>R$ 28.400</td>
+                <td>Freq. -70%</td>
+                <td><span class="badge badge-orange">Contato imediato</span></td>
+              </tr>
+              <tr>
+                <td><strong>Beta Distribuidora</strong></td>
+                <td><span class="badge badge-red">87%</span></td>
+                <td>45 dias</td>
+                <td>R$ 19.200</td>
+                <td>Ticket -40%</td>
+                <td><span class="badge badge-orange">Oferta especial</span></td>
+              </tr>
+              <tr>
+                <td><strong>Gamma Indústria</strong></td>
+                <td><span class="badge badge-yellow">71%</span></td>
+                <td>30 dias</td>
+                <td>R$ 42.800</td>
+                <td>NPS baixo</td>
+                <td><span class="badge badge-blue">CS proativo</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── DATA DIAGNOSIS ─────────── -->
+  <div class="page" id="page-data-diagnosis">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <div class="page-title">Data Diagnosis</div>
+          <div class="page-subtitle">Diagnóstico adaptável por canal, área ou produto — configure o escopo do cliente</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost">📋 Novo Diagnóstico</button>
+          <button class="btn btn-primary">↗ Exportar Relatório</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="subtabs" id="subtabs-dd">
+      <div class="subtab active" onclick="showSubtab('dd','canal')">Por Canal</div>
+      <div class="subtab" onclick="showSubtab('dd','area')">Por Área</div>
+      <div class="subtab" onclick="showSubtab('dd','produto')">Por Produto</div>
+    </div>
+
+    <div class="content">
+      <div class="subpage active" id="dd-canal">
+        <div class="insight-box">
+          <div class="insight-label">🔬 Diagnóstico — Canal E-commerce</div>
+          Identificados 4 pontos críticos que reduzem a eficiência do canal em 34%. O maior impacto isolado é o abandono de carrinho na etapa de frete (R$ 620K/mês em receita perdida).
+        </div>
+
+        <div class="channel-wrap">
+          <div class="channel-btn active">E-commerce</div>
+          <div class="channel-btn">Loja Física</div>
+          <div class="channel-btn">Marketplace</div>
+          <div class="channel-btn">Inside Sales</div>
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Score de Maturidade</div>
+            <div class="kpi-value accent">58/100</div>
+            <div class="kpi-sub">Nível: Em Desenvolvimento</div>
+            <div class="progress-wrap mt-8"><div class="progress-bar" style="width:58%"></div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Problemas Críticos</div>
+            <div class="kpi-value red">4</div>
+            <div class="kpi-sub">2 com impacto imediato</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Oportunidade Total</div>
+            <div class="kpi-value green">R$ 1,4M</div>
+            <div class="kpi-sub">Potencial 12 meses</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Complexidade da Correção</div>
+            <div class="kpi-value yellow" style="color:var(--yellow)">Média</div>
+            <div class="kpi-sub">2–4 meses para resultado</div>
+          </div>
+        </div>
+
+        <div class="section-title">Diagnóstico Detalhado — E-commerce</div>
+        <div class="grid grid-2 gap-16">
+          <div class="chart-card">
+            <table class="data-table">
+              <thead>
+                <tr><th>Dimensão</th><th>Score</th><th>Benchmark</th><th>Gap</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Dados & Tracking</td>
+                  <td><span class="badge badge-yellow">52%</span></td>
+                  <td>85%</td>
+                  <td style="color:var(--red)">-33pp</td>
+                </tr>
+                <tr>
+                  <td>Funil de Conversão</td>
+                  <td><span class="badge badge-red">38%</span></td>
+                  <td>78%</td>
+                  <td style="color:var(--red)">-40pp</td>
+                </tr>
+                <tr>
+                  <td>Personalização</td>
+                  <td><span class="badge badge-red">29%</span></td>
+                  <td>80%</td>
+                  <td style="color:var(--red)">-51pp</td>
+                </tr>
+                <tr>
+                  <td>Checkout & UX</td>
+                  <td><span class="badge badge-yellow">61%</span></td>
+                  <td>88%</td>
+                  <td style="color:var(--yellow)">-27pp</td>
+                </tr>
+                <tr>
+                  <td>Pós-venda Digital</td>
+                  <td><span class="badge badge-green">74%</span></td>
+                  <td>82%</td>
+                  <td style="color:var(--yellow)">-8pp</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-title" style="margin-bottom:14px">Plano de Ação Recomendado</div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Ação</th><th>Impacto</th><th>Prazo</th><th>Prioridade</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Implementar GA4 + eventos</td>
+                  <td>R$ 180K/a</td>
+                  <td>2 sem</td>
+                  <td><span class="badge badge-red">P1</span></td>
+                </tr>
+                <tr>
+                  <td>Otimizar página de frete</td>
+                  <td>R$ 620K/a</td>
+                  <td>4 sem</td>
+                  <td><span class="badge badge-red">P1</span></td>
+                </tr>
+                <tr>
+                  <td>Régua de recuperação</td>
+                  <td>R$ 240K/a</td>
+                  <td>6 sem</td>
+                  <td><span class="badge badge-yellow">P2</span></td>
+                </tr>
+                <tr>
+                  <td>Motor de recomendação</td>
+                  <td>R$ 360K/a</td>
+                  <td>12 sem</td>
+                  <td><span class="badge badge-blue">P3</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpage" id="dd-area">
+        <div class="insight-box">
+          <div class="insight-label">🔬 Diagnóstico — Área Comercial</div>
+          A área comercial opera com 62% de maturidade analítica. O maior gap é a ausência de forecast de receita confiável — decisões de headcount e estoque são feitas sem previsibilidade.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Maturidade Analítica</div>
+            <div class="kpi-value accent">62/100</div>
+            <div class="progress-wrap mt-8"><div class="progress-bar" style="width:62%"></div></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Decisões Data-Driven</div>
+            <div class="kpi-value yellow" style="color:var(--yellow)">41%</div>
+            <div class="kpi-sub">59% ainda intuitivas</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">KPIs Monitorados</div>
+            <div class="kpi-value">7 / 22</div>
+            <div class="kpi-sub">15 sem acompanhamento</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Impacto Estimado</div>
+            <div class="kpi-value green">R$ 780K/a</div>
+            <div class="kpi-sub">Com full data-driven</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpage" id="dd-produto">
+        <div class="insight-box">
+          <div class="insight-label">🔬 Diagnóstico — Produto: Pack Entrada</div>
+          Margem bruta de 28% está 14pp abaixo do portfolio. Volume alto mascara a baixa rentabilidade. Repricing de R$ 12 no ticket médio dobra a margem sem impacto relevante na conversão.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Margem Atual</div>
+            <div class="kpi-value red">28%</div>
+            <div class="kpi-delta down">▼ -14pp vs portfolio</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Volume Mensal</div>
+            <div class="kpi-value accent">8.471 un</div>
+            <div class="kpi-delta up">▲ +18% YoY</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Elasticidade Preço</div>
+            <div class="kpi-value green">-0,4</div>
+            <div class="kpi-sub">Pouco elástico — repricing viável</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Ganho c/ Repricing</div>
+            <div class="kpi-value green">+R$ 102K/m</div>
+            <div class="kpi-sub">Ticket +R$ 12 → Margem 42%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── VALUE PROJECT ─────────── -->
+  <div class="page" id="page-value-project">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <div class="page-title">Value Project</div>
+          <div class="page-subtitle">Projetos de alto impacto financeiro com modelos analíticos avançados</div>
+        </div>
+        <div class="topbar-actions">
+          <div class="predict-pill"><span class="dot-live"></span>Modelos Ativos</div>
+          <button class="btn btn-primary">+ Novo Projeto</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="subtabs" id="subtabs-vp">
+      <div class="subtab active" onclick="showSubtab('vp','churn')">Predição de Churn</div>
+      <div class="subtab" onclick="showSubtab('vp','demanda')">Predição de Demanda</div>
+      <div class="subtab" onclick="showSubtab('vp','producao')">Otimização Produção</div>
+      <div class="subtab" onclick="showSubtab('vp','valuation')">Valuation</div>
+      <div class="subtab" onclick="showSubtab('vp','margem')">Margem Operacional</div>
+      <div class="subtab" onclick="showSubtab('vp','capital')">CDG & NCG</div>
+    </div>
+
+    <div class="content">
+      <!-- CHURN -->
+      <div class="subpage active" id="vp-churn">
+        <div class="predict-pill" style="margin-bottom:16px"><span class="dot-live"></span>Modelo XGBoost — Acurácia 91,4%</div>
+
+        <div class="insight-box">
+          <div class="insight-label">💰 Impacto Financeiro</div>
+          312 clientes em alto risco representam R$ 2,1M de receita recorrente anual. Com taxa de recuperação de 35% via intervenção, o ROI do modelo é 18x no primeiro ano.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Acurácia do Modelo</div>
+            <div class="kpi-value green">91,4%</div>
+            <div class="kpi-sub">Precision: 88% | Recall: 85%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Clientes em Risco Alto</div>
+            <div class="kpi-value red">312</div>
+            <div class="kpi-sub">Churn prob. &gt; 70%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Receita em Risco</div>
+            <div class="kpi-value accent">R$ 2,1M/a</div>
+            <div class="kpi-sub">Concentrado em 40 contas</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">ROI do Modelo</div>
+            <div class="kpi-value green">18x</div>
+            <div class="kpi-sub">Com intervenção de 35%</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-16">
+          <div class="chart-card">
+            <div class="chart-card-title" style="margin-bottom:14px">Top Features — Predição de Churn</div>
+            <div class="funnel-row">
+              <div class="funnel-label">Frequência compra</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%;background:var(--red)"></div></div>
+              <div class="funnel-val">0,34</div>
+              <div class="funnel-pct">34%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Variação de ticket</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:72%;background:var(--accent)"></div></div>
+              <div class="funnel-val">0,24</div>
+              <div class="funnel-pct">24%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">NPS histórico</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:52%;background:var(--yellow)"></div></div>
+              <div class="funnel-val">0,18</div>
+              <div class="funnel-pct">18%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Interação suporte</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:36%;background:var(--blue)"></div></div>
+              <div class="funnel-val">0,12</div>
+              <div class="funnel-pct">12%</div>
+            </div>
+            <div class="funnel-row">
+              <div class="funnel-label">Tempo sem login</div>
+              <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:22%;background:var(--purple)"></div></div>
+              <div class="funnel-val">0,07</div>
+              <div class="funnel-pct">7%</div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-title" style="margin-bottom:14px">Distribuição de Risco</div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Segmento</th><th>Clientes</th><th>Receita</th><th>Ação</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Risco Crítico (&gt;90%)</td>
+                  <td><span class="badge badge-red">48</span></td>
+                  <td>R$ 640K/a</td>
+                  <td><span class="badge badge-orange">CEO Contact</span></td>
+                </tr>
+                <tr>
+                  <td>Risco Alto (70–90%)</td>
+                  <td><span class="badge badge-red">264</span></td>
+                  <td>R$ 1,46M/a</td>
+                  <td><span class="badge badge-blue">CS Ativo</span></td>
+                </tr>
+                <tr>
+                  <td>Risco Médio (40–70%)</td>
+                  <td><span class="badge badge-yellow">891</span></td>
+                  <td>R$ 3,2M/a</td>
+                  <td><span class="badge badge-green">Nurture</span></td>
+                </tr>
+                <tr>
+                  <td>Baixo Risco (&lt;40%)</td>
+                  <td><span class="badge badge-green">4.247</span></td>
+                  <td>R$ 12,8M/a</td>
+                  <td><span class="badge badge-green">Expansão</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEMANDA -->
+      <div class="subpage" id="vp-demanda">
+        <div class="predict-pill" style="margin-bottom:16px"><span class="dot-live"></span>Modelo Prophet + LSTM — MAPE 4,2%</div>
+
+        <div class="insight-box">
+          <div class="insight-label">💰 Impacto Financeiro</div>
+          Redução de 23% no estoque parado e 18% no custo de ruptura. Ganho estimado de R$ 480K/a com previsão de demanda precisa.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">MAPE do Modelo</div>
+            <div class="kpi-value green">4,2%</div>
+            <div class="kpi-sub">Previsão 30 dias</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Demanda Prevista — Jul</div>
+            <div class="kpi-value accent">91.200 un</div>
+            <div class="kpi-sub">IC 90%: 88K – 94K</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Estoque Excedente</div>
+            <div class="kpi-value red">R$ 380K</div>
+            <div class="kpi-sub">28 SKUs com overstock</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Custo de Ruptura</div>
+            <div class="kpi-value yellow" style="color:var(--yellow)">R$ 140K</div>
+            <div class="kpi-sub">Vendas perdidas/mês</div>
+          </div>
+        </div>
+
+        <div class="sim-box">
+          <div class="sim-title">🎛 Simulador de Cenários de Demanda</div>
+          <div class="sim-row">
+            <div class="sim-label">Crescimento de Mercado (%)</div>
+            <input type="range" min="-20" max="50" value="10" oninput="simDemanda(this.value)">
+            <div class="sim-val" id="dem-pct">+10%</div>
+          </div>
+          <div class="sim-result">
+            <div class="sim-result-item">
+              <div class="label">Demanda Projetada</div>
+              <div class="value accent" id="dem-vol">100.320 un</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Receita Adicional</div>
+              <div class="value green" id="dem-rec">+R$ 228K</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Capacidade Necessária</div>
+              <div class="value" id="dem-cap">89%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUÇÃO -->
+      <div class="subpage" id="vp-producao">
+        <div class="insight-box">
+          <div class="insight-label">💰 Impacto Financeiro</div>
+          Otimização do sequenciamento de produção pode reduzir setup time em 34% e recuperar 6.200 unidades/mês. Impacto de R$ 155K/mês na margem contribuição.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Setup Time Atual</div>
+            <div class="kpi-value red">4,2h/dia</div>
+            <div class="kpi-sub">Meta com otimização: 2,8h</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Ganho de Capacidade</div>
+            <div class="kpi-value green">+6.200 un</div>
+            <div class="kpi-sub">Sem CAPEX adicional</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Impacto na Margem</div>
+            <div class="kpi-value accent">R$ 155K/m</div>
+            <div class="kpi-sub">Absorção de custo fixo</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Payback Projeto</div>
+            <div class="kpi-value green">2,1 meses</div>
+            <div class="kpi-sub">ROI 12m: 480%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VALUATION -->
+      <div class="subpage" id="vp-valuation">
+        <div class="insight-box">
+          <div class="insight-label">💰 Valuation Dinâmico</div>
+          Com os dados atuais, o enterprise value estimado pelo modelo de DCF é R$ 38–44M. O maior driver de destruição de valor são os custos financeiros (12% da receita). Redução de 4pp no custo do capital aumenta o EV em R$ 6M.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Enterprise Value (DCF)</div>
+            <div class="kpi-value accent">R$ 41M</div>
+            <div class="kpi-sub">Range: R$ 38M – R$ 44M</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Múltiplo EBITDA</div>
+            <div class="kpi-value">8,4x</div>
+            <div class="kpi-sub">Benchmark setor: 9–12x</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">WACC</div>
+            <div class="kpi-value red">18,4%</div>
+            <div class="kpi-sub">Meta: reduzir para 14%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Potencial de Upside</div>
+            <div class="kpi-value green">+R$ 14M</div>
+            <div class="kpi-sub">Com melhorias operacionais</div>
+          </div>
+        </div>
+
+        <div class="sim-box">
+          <div class="sim-title">🎛 Simulador de Valuation</div>
+          <div class="sim-row">
+            <div class="sim-label">Crescimento de Receita (%)</div>
+            <input type="range" min="0" max="40" value="15" oninput="simVal(this.value)">
+            <div class="sim-val" id="val-pct">+15%</div>
+          </div>
+          <div class="sim-row">
+            <div class="sim-label">Melhoria de Margem EBITDA (pp)</div>
+            <input type="range" min="0" max="15" value="3" oninput="simValMarg(this.value)">
+            <div class="sim-val" id="val-marg">+3pp</div>
+          </div>
+          <div class="sim-result">
+            <div class="sim-result-item">
+              <div class="label">EV Projetado</div>
+              <div class="value accent" id="val-ev">R$ 51M</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Upside</div>
+              <div class="value green" id="val-up">+R$ 10M</div>
+            </div>
+            <div class="sim-result-item">
+              <div class="label">Múltiplo Alvo</div>
+              <div class="value" id="val-mult">10,2x</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARGEM -->
+      <div class="subpage" id="vp-margem">
+        <div class="insight-box">
+          <div class="insight-label">💰 Alavanca Identificada</div>
+          3 produtos com margem negativa após rateio correto de indiretos respondem por 18% do volume. Descontinuação ou repricing libera R$ 220K/mês de margem oculta.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">Margem Operacional</div>
+            <div class="kpi-value accent">14,8%</div>
+            <div class="kpi-delta up">▲ +1,2pp QoQ</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Produtos Margem Negativa</div>
+            <div class="kpi-value red">3</div>
+            <div class="kpi-sub">Após rateio de indiretos</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Margem Oculta</div>
+            <div class="kpi-value green">R$ 220K/m</div>
+            <div class="kpi-sub">Alavanca imediata</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Meta Margem Op.</div>
+            <div class="kpi-value">20%</div>
+            <div class="kpi-sub">Gap: +5,2pp</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-title" style="margin-bottom:14px">Margem por Produto — Após Rateio Real</div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Produto</th><th>Receita</th><th>Custo Direto</th><th>Rateio Indir.</th><th>Margem Real</th><th>Decisão</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Plano Premium X</strong></td>
+                <td>R$ 890K</td>
+                <td>R$ 445K</td>
+                <td>R$ 89K</td>
+                <td><span class="badge badge-green">40%</span></td>
+                <td><span class="badge badge-green">Expandir</span></td>
+              </tr>
+              <tr>
+                <td><strong>Serviço Core B2B</strong></td>
+                <td>R$ 740K</td>
+                <td>R$ 266K</td>
+                <td>R$ 74K</td>
+                <td><span class="badge badge-green">54%</span></td>
+                <td><span class="badge badge-green">Expandir</span></td>
+              </tr>
+              <tr>
+                <td><strong>Pack Entrada</strong></td>
+                <td>R$ 610K</td>
+                <td>R$ 427K</td>
+                <td>R$ 91K</td>
+                <td><span class="badge badge-yellow">15%</span></td>
+                <td><span class="badge badge-yellow">Repricing</span></td>
+              </tr>
+              <tr>
+                <td><strong>Assinatura Mensal</strong></td>
+                <td>R$ 390K</td>
+                <td>R$ 335K</td>
+                <td>R$ 78K</td>
+                <td><span class="badge badge-red">-6%</span></td>
+                <td><span class="badge badge-red">Descontinuar</span></td>
+              </tr>
+              <tr>
+                <td><strong>Promo Flash</strong></td>
+                <td>R$ 180K</td>
+                <td>R$ 162K</td>
+                <td>R$ 36K</td>
+                <td><span class="badge badge-red">-10%</span></td>
+                <td><span class="badge badge-red">Descontinuar</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CDG & NCG -->
+      <div class="subpage" id="vp-capital">
+        <div class="insight-box">
+          <div class="insight-label">💰 Diagnóstico de Capital de Giro</div>
+          NCG positiva de R$ 1,8M e CDG de apenas R$ 620K indica gap de R$ 1,18M financiado por fontes onerosas. Otimização do ciclo financeiro pode liberar R$ 840K em caixa nos próximos 90 dias.
+        </div>
+
+        <div class="grid grid-4 mb-16">
+          <div class="kpi-card">
+            <div class="kpi-label">CDG (Capital de Giro)</div>
+            <div class="kpi-value yellow" style="color:var(--yellow)">R$ 620K</div>
+            <div class="kpi-sub">Patrimônio Líq. – Ativo NCirc.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">NCG (Nec. Capital Giro)</div>
+            <div class="kpi-value red">R$ 1,8M</div>
+            <div class="kpi-sub">Ativos Op. – Passivos Op.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Saldo de Tesouraria</div>
+            <div class="kpi-value red">-R$ 1,18M</div>
+            <div class="kpi-sub">CDG – NCG</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Ciclo Financeiro</div>
+            <div class="kpi-value accent">48 dias</div>
+            <div class="kpi-sub">Meta: 32 dias</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-16">
+          <div class="chart-card">
+            <div class="chart-card-title" style="margin-bottom:14px">Componentes do Ciclo Operacional</div>
+            <table class="data-table">
+              <thead>
+                <tr><th>Componente</th><th>Atual</th><th>Meta</th><th>Impacto</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PME (Estoque)</td>
+                  <td>35 dias</td>
+                  <td>22 dias</td>
+                  <td style="color:var(--green)">Libera R$ 520K</td>
+                </tr>
+                <tr>
+                  <td>PMR (Recebimento)</td>
+                  <td>28 dias</td>
+                  <td>20 dias</td>
+                  <td style="color:var(--green)">Libera R$ 220K</td>
+                </tr>
+                <tr>
+                  <td>PMP (Pagamento)</td>
+                  <td>15 dias</td>
+                  <td>25 dias</td>
+                  <td style="color:var(--green)">Libera R$ 100K</td>
+                </tr>
+                <tr>
+                  <td><strong>Ciclo Financeiro</strong></td>
+                  <td><strong>48 dias</strong></td>
+                  <td><strong>17 dias</strong></td>
+                  <td style="color:var(--green)"><strong>Libera R$ 840K</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="sim-box" style="margin:0">
+            <div class="sim-title">🎛 Simulador de CDG</div>
+            <div class="sim-row">
+              <div class="sim-label">Redução PME (dias)</div>
+              <input type="range" min="0" max="20" value="8" oninput="simCDG(this.value)">
+              <div class="sim-val" id="cdg-pme">-8 dias</div>
+            </div>
+            <div class="sim-result">
+              <div class="sim-result-item">
+                <div class="label">Caixa Liberado</div>
+                <div class="value green" id="cdg-caixa">R$ 320K</div>
+              </div>
+              <div class="sim-result-item">
+                <div class="label">Novo Ciclo</div>
+                <div class="value accent" id="cdg-ciclo">40 dias</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────── DATA CULTURE ─────────── -->
+  <div class="page" id="page-data-culture">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <div class="page-title">Data Culture</div>
+          <div class="page-subtitle">Capacitação e cultura data-driven em toda a organização</div>
+        </div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="icon">🌱</div>
+      <div class="title">Em desenvolvimento</div>
+      <div class="desc">O módulo Data Culture está sendo construído com trilhas de capacitação e métricas de adoção analítica por área.</div>
+    </div>
+  </div>
+
+  <!-- ─────────── DATA FOUNDATION ─────────── -->
+  <div class="page" id="page-data-foundation">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <div class="page-title">Data Foundation</div>
+          <div class="page-subtitle">Infraestrutura de dados, governança e arquitetura analítica</div>
+        </div>
+      </div>
+    </div>
+    <div class="coming-soon">
+      <div class="icon">🏗️</div>
+      <div class="title">Em desenvolvimento</div>
+      <div class="desc">O módulo Data Foundation está sendo estruturado com visão completa de data stack, governança e maturidade de dados.</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // ── NAVIGATION ──
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  function showSubtab(ns, id) {
+    const tabs = document.querySelectorAll('#subtabs-' + ns + ' .subtab');
+    tabs.forEach(t => t.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    const pages = document.querySelectorAll('#page-' + pageName(ns) + ' .subpage');
+    pages.forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(ns + '-' + id);
+    if (target) target.classList.add('active');
+  }
+
+  function pageName(ns) {
+    const map = { sa: 'smart-analytics', bi: 'bi-pro', dd: 'data-diagnosis', vp: 'value-project' };
+    return map[ns] || ns;
+  }
+
+  // ── SIMULATORS ──
+  function simCAC(v) {
+    document.getElementById('cac-pct').textContent = '-' + v + '%';
+    const vol = parseInt(document.querySelector('#bi-comercial input:nth-of-type(2)').value);
+    const econ = Math.round(142 * (v/100) * vol / 1000);
+    document.getElementById('sim-econ').textContent = 'R$ ' + econ + 'K';
+    document.getElementById('sim-anual').textContent = 'R$ ' + (econ*12) + 'K';
+    document.getElementById('sim-ltv').textContent = '+' + Math.round(v*0.3) + 'pp';
+  }
+
+  function simVol(v) {
+    document.getElementById('vol-val').textContent = v;
+    const pct = parseInt(document.querySelector('#bi-comercial input:nth-of-type(1)').value);
+    const econ = Math.round(142 * (pct/100) * v / 1000);
+    document.getElementById('sim-econ').textContent = 'R$ ' + econ + 'K';
+    document.getElementById('sim-anual').textContent = 'R$ ' + (econ*12) + 'K';
+  }
+
+  function simOEE(v) {
+    document.getElementById('oee-val').textContent = v + '%';
+    const base = 68;
+    const delta = v - base;
+    const un = Math.max(0, Math.round(delta * 420));
+    const rec = Math.max(0, Math.round(un * 24.8 / 1000));
+    const cmv = (delta * 0.08).toFixed(1);
+    document.getElementById('oee-un').textContent = '+' + un.toLocaleString('pt-BR');
+    document.getElementById('oee-rec').textContent = 'R$ ' + rec + 'K';
+    document.getElementById('oee-cmv').textContent = (delta >= 0 ? '-' : '+') + Math.abs(cmv) + 'pp';
+  }
+
+  function simDemanda(v) {
+    const pct = parseInt(v);
+    document.getElementById('dem-pct').textContent = (pct >= 0 ? '+' : '') + pct + '%';
+    const base = 91200;
+    const proj = Math.round(base * (1 + pct/100));
+    const rec = Math.round((proj - base) * 2.28 / 100);
+    const cap = Math.round(proj / 1128);
+    document.getElementById('dem-vol').textContent = proj.toLocaleString('pt-BR') + ' un';
+    document.getElementById('dem-rec').textContent = (rec >= 0 ? '+' : '') + 'R$ ' + Math.abs(rec) + 'K';
+    document.getElementById('dem-cap').textContent = cap + '%';
+  }
+
+  function simVal(v) {
+    document.getElementById('val-pct').textContent = '+' + v + '%';
+    updateValuation();
+  }
+
+  function simValMarg(v) {
+    document.getElementById('val-marg').textContent = '+' + v + 'pp';
+    updateValuation();
+  }
+
+  function updateValuation() {
+    const crescimento = parseInt(document.querySelector('#vp-valuation input:nth-of-type(1)').value) || 15;
+    const margem = parseInt(document.querySelector('#vp-valuation input:nth-of-type(2)').value) || 3;
+    const ev = Math.round(41 + crescimento * 0.3 + margem * 0.8);
+    const up = ev - 41;
+    const mult = (8.4 + crescimento * 0.05 + margem * 0.06).toFixed(1);
+    document.getElementById('val-ev').textContent = 'R$ ' + ev + 'M';
+    document.getElementById('val-up').textContent = '+R$ ' + up + 'M';
+    document.getElementById('val-mult').textContent = mult + 'x';
+  }
+
+  function simCDG(v) {
+    document.getElementById('cdg-pme').textContent = '-' + v + ' dias';
+    const caixa = Math.round(v * 40);
+    const ciclo = 48 - parseInt(v);
+    document.getElementById('cdg-caixa').textContent = 'R$ ' + caixa + 'K';
+    document.getElementById('cdg-ciclo').textContent = ciclo + ' dias';
+  }
+</script>
+</body>
+</html>
